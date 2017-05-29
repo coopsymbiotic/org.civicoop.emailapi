@@ -137,10 +137,11 @@ function civicrm_api3_email_send($params) {
     foreach ($type as $key => $value) {
       $bodyType = "body_{$value}";
       if ($$bodyType) {
-        CRM_Utils_Token::replaceGreetingTokens($$bodyType, NULL, $contact['contact_id']);
-        $$bodyType = CRM_Utils_Token::replaceDomainTokens($$bodyType, $domain, true, $tokens, true);
-        $$bodyType = CRM_Utils_Token::replaceContactTokens($$bodyType, $contact, false, $tokens, false, true);
         $$bodyType = CRM_Utils_Token::replaceComponentTokens($$bodyType, $contact, $tokens, true);
+        $$bodyType = CRM_Utils_Token::replaceDomainTokens($$bodyType, $domain, true, $tokens, true);
+        CRM_Utils_Token::replaceGreetingTokens($$bodyType, NULL, $contact['contact_id']);
+        // NOTE: replaceGreetingTokens() may already have substituted contact fields and missing tokens may also be gone...
+        $$bodyType = CRM_Utils_Token::replaceContactTokens($$bodyType, $contact, false, $tokens, false, true);
         $$bodyType = CRM_Utils_Token::replaceHookTokens($$bodyType, $contact, $categories, true);
       }
     }
